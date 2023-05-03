@@ -57,103 +57,65 @@ func isInGroup(group []string, a string) bool {
 	return false
 }
 
-func canUnion(a []string, b []string) bool {
-
-	for _, val := range a {
-		if isInGroup(b, val) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func merge(groups [][]string) [][]string {
-
-	merged := true
-
-	newGroups := make([][]string, 1, len(groups))
-
-	for ; merged == true ; {
-		merged = false;
-
-		for i := 0; i < len(groups) && merged == false ; i += 1 {
-
-			for j := i + 1; j < len(groups) && merged == false ; j += 1 {
-
-				if canUnion(groups[i], groups[j]) {
-
-					for _, jVal := range groups[j] {
-						groups[i] = append(groups[i], jVal)
-					}
-
-					groups = append(groups[:j], groups[:j + 1]...)
-					merge = true
-				}
-
-			}
-
-		}
-
-	}
-
-	return groups
-}
-
 func numSimilarGroups(strs []string) int {
 
 	groups := make([][]string, 0, len(strs))
 
 	for _, str := range strs {
 
-		groupFound := false
+		foundGroupIndex := -1
+		// the simplest way to get merged groups is to create new slice of groups
+		newGroups := make([][]string, 0, len(strs))
 
 		for i, group := range groups {
 
-			if isInGroup(group, str) {
+			if isInGroup(group, str) == false {
+				newGroups = append(newGroups, group)
+				continue
+			}
+
+			if foundGroupIndex == -1 {
 
 				group = append(group, str)
-				groups[i] = group
-				groupFound = true
-				break
+				newGroups = append(newGroups, group)
+				foundGroupIndex = i
+
+			} else {
+
+				mergedGroup := append(groups[foundGroupIndex], groups[i]...)
+				newGroups[foundGroupIndex] = mergedGroup
 
 			}
 
 		}
 
-		if groupFound == false {
+		if foundGroupIndex == -1 {
 
 			currentGroup := make([]string, 1)
 			currentGroup[0] = str
-			groups = append(groups, currentGroup)
+			newGroups = append(newGroups, currentGroup)
 		}
 
-	}
+		groups = newGroups
 
-	fmt.Println(groups)
+	}
 
 	return len(groups)
 }
 
 func main() {
 
-	fmt.Println(areSimilar("tars", "rats"), true)
-	fmt.Println(areSimilar("rats", "arts"), true)
-	fmt.Println(areSimilar("rats", "star"), false)
-	fmt.Println(areSimilar("coswmccgkc", "cosgmccwkc"), true)
 
-	strs := []string{"kccomwcgcs","socgcmcwkc","sgckwcmcoc","coswcmcgkc","cowkccmsgc","cosgmccwkc","sgmkwcccoc","coswmccgkc","kowcccmsgc","kgcomwcccs"}
+	// strs := []string{"kccomwcgcs","socgcmcwkc","sgckwcmcoc","coswcmcgkc","cowkccmsgc","cosgmccwkc","sgmkwcccoc","coswmccgkc","kowcccmsgc","kgcomwcccs"}
+	// result := numSimilarGroups(strs)
+	// fmt.Println(result, 5)
+
+	strs := []string{"tars","rats","arts","star"}
 	result := numSimilarGroups(strs)
 	fmt.Println(result, 2)
 
-	
-
-	// strs := []string{"tars","rats","arts","star"}
+	// strs := []string{"omv","ovm"}
 	// result := numSimilarGroups(strs)
-	// fmt.Println(result, 2)
-
-	// strs = []string{"omv","ovm"}
-	// result = numSimilarGroups(strs)
 	// fmt.Println(result, 1)
 
 }
