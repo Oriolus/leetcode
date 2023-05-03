@@ -57,6 +57,49 @@ func isInGroup(group []string, a string) bool {
 	return false
 }
 
+func canUnion(a []string, b []string) bool {
+
+	for _, val := range a {
+		if isInGroup(b, val) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func merge(groups [][]string) [][]string {
+
+	merged := true
+
+	newGroups := make([][]string, 1, len(groups))
+
+	for ; merged == true ; {
+		merged = false;
+
+		for i := 0; i < len(groups) && merged == false ; i += 1 {
+
+			for j := i + 1; j < len(groups) && merged == false ; j += 1 {
+
+				if canUnion(groups[i], groups[j]) {
+
+					for _, jVal := range groups[j] {
+						groups[i] = append(groups[i], jVal)
+					}
+
+					groups = append(groups[:j], groups[:j + 1]...)
+					merge = true
+				}
+
+			}
+
+		}
+
+	}
+
+	return groups
+}
+
 func numSimilarGroups(strs []string) int {
 
 	groups := make([][]string, 0, len(strs))
