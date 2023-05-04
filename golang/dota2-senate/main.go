@@ -1,5 +1,7 @@
 package main
 
+// https://leetcode.com/problems/dota2-senate/
+
 import "fmt"
 
 func getNextBanned(senate string, banned []bool, currentIndex int) (bool, int) {
@@ -66,9 +68,7 @@ func predictPartyVictory(senate string) string {
 				if string(senate[i]) == "R" {
 					return "Radiant"
 				}
-
 				return "Dire"
-
 			}
 
 			if string(senate[banningIndex]) == "D" {
